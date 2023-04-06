@@ -1,0 +1,72 @@
+Перший код
+void setup() {
+  DDRD |= B11111100; 
+}
+
+void loop() {
+  for (int i = 6; i >= 2; i -= 2) { 
+    PORTD = (1 << i) | (1 << (i+1)); 
+    delay(1000); // 
+  }
+  
+  for (int i = 2; i >= 0; i -= 2) { 
+    PORTD = (1 << i) | (1 << (i+1)); 
+    delay(1000);
+  }
+}
+
+Другий код
+
+void setup() {
+  DDRD |= B11111100; 
+}
+
+void loop() {
+  for (int i = 0; i <= 4; i += 2) { 
+    PORTD = (1 << i) | (1 << (i+1)); 
+    delay(1000); // 
+  }
+  
+  for (int i = 2; i <= 4; i += 2) { 
+    PORTD = (1 << i) | (1 << (i+1)); 
+    delay(1000); 
+  }
+}
+
+Практична 3
+int pins[8] = {2, 3, 4, 5, 6, 7, 8, 9}; // масив пінів для підключення сегментів a-g і крапки
+byte numbers[8] = {B00111111, B00000110, B01011011, B01001111, B01100110, B01101101, B01111101, B00000111}; // масив цифр для відображення на 7-сегментному індикаторі
+int birthdate[3] = {1, 2, 3}; // масив дати народження [День, Місяць, Рік]
+int birthdate_length = sizeof(birthdate)/sizeof(birthdate[0]); // кількість елементів у масиві дати народження
+
+void setup() {
+  for (int i = 0; i < 8; i++) {
+    pinMode(pins[i], OUTPUT); // встановлюємо всі піни як вихідні
+  }
+}
+
+void loop() {
+  for (int i = 0; i < birthdate_length; i++) {
+    showNumber(birthdate[i]); // відображаємо цифру з масиву дати народження
+    delay(1200);
+  }
+}
+
+void showNumber(int num) {
+  for (int i = 0; i < 7; i++) {
+    if (bitRead(numbers[num], 6 - i) == HIGH) {
+      digitalWrite(pins[i], HIGH); // вмикаємо сегмент, якщо відповідний біт в масиві цифр встановлений в HIGH
+    }
+    else {
+      digitalWrite(pins[i], LOW); // вимикаємо сегмент, якщо відповідний біт в масиві цифр встановлений в LOW
+    }
+  }
+
+  if (num == 0 || num == 2) {
+    digitalWrite(pins[7], HIGH); // вмикаємо крапку для цифр 0 і 2
+  }
+  else {
+    digitalWrite(pins[7], LOW); // вимикаємо крапку для інших цифр
+  }
+}
+
